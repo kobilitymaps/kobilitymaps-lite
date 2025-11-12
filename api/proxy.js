@@ -1,7 +1,6 @@
-
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET', 'OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS'); 
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -15,7 +14,13 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const apiResponse = await fetch(targetURL);
+    const apiResponse = await fetch(targetURL, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+      }
+    });
+
     if (!apiResponse.ok) {
       throw new Error(`API server responded with status ${apiResponse.status}`);
     }
@@ -30,10 +35,10 @@ module.exports = async (req, res) => {
     res.status(200).json(data);
 
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching from target API', error: error.message });
+    res.status(500).json({ 
+      message: 'Error fetching from target API', 
+      error: error.message,
+      target: targetURL
+    });
   }
 };
-
-
-
-
